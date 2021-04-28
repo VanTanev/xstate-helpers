@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Generate the test alternative name for a given file, so that naming is consistent
+
+main() {
+    if [[ "$1" =~ src/ ]]; then
+        # turn:
+        # /src/components/ui/Filter.tsx
+        # into:
+        # /test/components/ui/Filter.test.tsx
+        echo "$1" | sed -e 's/src/test/' | sed -e 's/\(\.\(ts\|js\)x\?\)$/\.test\1/'
+    else
+        # turn:
+        # /test/components/ui/Filter.test.tsx
+        # into:
+        # /src/components/ui/Filter.tsx
+        echo "$1" | sed -e 's/test\//src\//' | sed -e 's/\.test\(\.\(ts\|js\)x\?\)$/\1/'
+    fi
+}
+
+main "$@"
