@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useIsXStateTransitionAvailable } from '../../src/react/useIsXStateTransitionAvailable';
+import { useIsXStateTransitionAvailable } from '../src/useIsXStateTransitionAvailable';
 import { createMachine, interpret, Interpreter } from 'xstate';
 
 describe('useIsXStateTransitionAvailable', () => {

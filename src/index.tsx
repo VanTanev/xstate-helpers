@@ -1,4 +1,4 @@
-import { useIsXStateTransitionAvailable } from './react/useIsXStateTransitionAvailable';
-import { assertEvent, invariantEvent} from './event'
+import { useIsXStateTransitionAvailable } from './useIsXStateTransitionAvailable';
+import { assertEvent, invariantEvent} from './events'
 
 export { useIsXStateTransitionAvailable, assertEvent, invariantEvent };
