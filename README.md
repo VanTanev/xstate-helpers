@@ -9,9 +9,9 @@ A collection of helpers for XState (with React).
 Check if a state transition is availalbe from the current machine state
 
 ```typescript
-import { createMachine } from 'xstate'
-import { useMachine } from '@xstate/react'
-import { useIsXStateTransitionAvailable } from 'xstate-helpers'
+import { createMachine } from 'xstate';
+import { useMachine } from '@xstate/react';
+import { useIsXStateTransitionAvailable } from 'xstate-helpers';
 
 const [state, send, service] = useMachine(
   createMachine({
@@ -68,8 +68,8 @@ Force an event to be handled as if it was of particular type.
 Will throw a runtime exception if the given event does not match the expected event.
 
 ```typescript
-import { createMachine } from 'xstate'
-import { invariantEvent } from 'xstate-helpers'
+import { createMachine } from 'xstate';
+import { invariantEvent } from 'xstate-helpers';
 
 const machine = createMachine<Context, Event>(
   {
@@ -95,10 +95,10 @@ const machine = createMachine<Context, Event>(
 );
 ```
 
-| Parameter      | Type                                                    | Description   |
-| :------------- | :------------------------------------------------------ | :------------ |
-| `event`        | `EventObject`                                           | **Required**. |
-| `eventType(s)` | `EventObject | EventType | EventObject[] | EventType[]` | **Required**. |
+| Parameter      | Type                                                       | Description   |
+| :------------- | :--------------------------------------------------------- | :------------ |
+| `event`        | `EventObject`                                              | **Required**. |
+| `eventType(s)` | `EventObject \| EventType \| EventObject[] \| EventType[]` | **Required**. |
 
 #### assertEvent()
 
@@ -106,8 +106,8 @@ Force an event to be handled as if it was of particular type.
 Does not actually enforce the type at runtime, just appeases TypeScript.
 
 ```typescript
-import { createMachine } from 'xstate'
-import { invariantEvent } from 'xstate-helpers'
+import { createMachine } from 'xstate';
+import { invariantEvent } from 'xstate-helpers';
 
 const machine = createMachine<Context, Event>(
   {
@@ -133,10 +133,10 @@ const machine = createMachine<Context, Event>(
 );
 ```
 
-| Parameter      | Type                                                    | Description   |
-| :------------- | :------------------------------------------------------ | :------------ |
-| `event`        | `EventObject`                                           | **Required**. |
-| `eventType(s)` | `EventObject | EventType | EventObject[] | EventType[]` | **Required**. |
+| Parameter      | Type                                                       | Description   |
+| :------------- | :--------------------------------------------------------- | :------------ |
+| `event`        | `EventObject`                                              | **Required**. |
+| `eventType(s)` | `EventObject \| EventType \| EventObject[] \| EventType[]` | **Required**. |
 
 ## License
 
