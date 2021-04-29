@@ -1,4 +1,4 @@
 import { useIsXStateTransitionAvailable } from './useIsXStateTransitionAvailable';
-import { assertEvent, invariantEvent} from './events'
+import { assertEvent, invariantEvent } from './events';
 
 export { useIsXStateTransitionAvailable, assertEvent, invariantEvent };

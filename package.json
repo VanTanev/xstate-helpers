@@ -10,13 +10,18 @@
   "engines": {
     "node": ">=10"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:VanTanev/xstate-helpers.git"
+  },
   "scripts": {
     "start": "npm-run-all -p 'start' 'test --watchAll'",
     "watch": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
+    "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install && tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -25,11 +30,6 @@
     "@xstate/react": ">=1.3.0",
     "react": ">=16",
     "xstate": "^4.15.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
   },
   "prettier": {
     "printWidth": 80,
@@ -59,6 +59,7 @@
     "@xstate/inspect": "^0.4.1",
     "@xstate/react": "^1.3.2",
     "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
     "npm-run-all": "^4.1.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
