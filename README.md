@@ -2,6 +2,12 @@
 
 A collection of helpers for XState (with React).
 
+## Installation
+
+```bash
+npm install xstate-helpers
+```
+
 ## API Reference
 
 #### useIsXStateTransitionAvailable()
