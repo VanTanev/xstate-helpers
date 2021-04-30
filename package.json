@@ -10,10 +10,7 @@
   "engines": {
     "node": ">=10"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:VanTanev/xstate-helpers.git"
-  },
+  "repository": "https://github.com:VanTanev/xstate-helpers.git",
   "scripts": {
     "start": "npm-run-all -p 'start' 'test --watchAll'",
     "watch": "tsdx watch",
