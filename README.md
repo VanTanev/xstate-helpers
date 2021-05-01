@@ -10,7 +10,7 @@ npm install xstate-helpers
 
 ## API Reference
 
-#### useIsXStateTransitionAvailable()
+### useIsXStateTransitionAvailable()
 
 Check if a state transition is availalbe from the current machine state
 
@@ -68,7 +68,7 @@ useIsXStateTransitionAvailable(service, {
 | `service` | An interpreted machine or a spawned machine | **Required**. |
 | `event`   | EventObject or EventType                    | **Required**. |
 
-#### invariantEvent()
+### invariantEvent()
 
 Force an event to be handled as if it was of particular type.
 Will throw a runtime exception if the given event does not match the expected event.
@@ -106,14 +106,55 @@ const machine = createMachine<Context, Event>(
 | `event`        | `EventObject`                                              | **Required**. |
 | `eventType(s)` | `EventObject \| EventType \| EventObject[] \| EventType[]` | **Required**. |
 
-#### assertEvent()
+### isEvent()
+
+Check if an event matches the expected event type.
+
+```typescript
+import { createMachine } from 'xstate';
+import { isEvent } from 'xstate-helpers';
+
+const machine = createMachine<Context, Event>(
+  {
+    on: {
+      SHOW_DATE: { actions: 'showDate' },
+      UPDATE_DATE: { actions: 'updateDate' },
+    },
+  },
+  {
+    actions: {
+      showDate: (ctx, e) => {
+        if (!isEvent(e, 'SHOW_DATE') return;
+        alert(ctx.date.toISOString());
+      },
+      updateDate: assign({
+        date: (_, e) => {
+          if (!isEvent(e, 'UPDATE_DATE')) return;
+          return e.date; // has type "Date"
+        },
+      }),
+    },
+  }
+);
+```
+
+| Parameter      | Type                                                       | Description   |
+| :------------- | :--------------------------------------------------------- | :------------ |
+| `event`        | `EventObject`                                              | **Required**. |
+| `eventType(s)` | `EventObject \| EventType \| EventObject[] \| EventType[]` | **Required**. |
+
+### assertEvent()
 
 Force an event to be handled as if it was of particular type.
 Does not actually enforce the type at runtime, just appeases TypeScript.
 
+> Warning!
+> This just blindly asserts a type, without any runtime validation.
+> It's recommended to use `isEvent()` or `invariantEvent()` instead.
+
 ```typescript
 import { createMachine } from 'xstate';
-import { invariantEvent } from 'xstate-helpers';
+import { assertEvent } from 'xstate-helpers';
 
 const machine = createMachine<Context, Event>(
   {

@@ -46,3 +46,19 @@ export function invariantEvent<TEvent extends EventObject>(
     );
   }
 }
+
+export function isEvent<
+  TEvent extends EventObject,
+  TEventType extends TEvent['type']
+>(event: TEvent, type: TEventType): event is ExtractEvent<TEvent, TEventType>;
+export function isEvent<
+  TEvent extends EventObject,
+  TEventType extends TEvent['type']
+>(event: TEvent, type: TEventType[]): event is ExtractEvent<TEvent, TEventType>;
+export function isEvent<TEvent extends EventObject>(
+  event: TEvent,
+  types: string | string[]
+): boolean {
+  types = Array.isArray(types) ? types : [types];
+  return types.includes(event.type);
+}
