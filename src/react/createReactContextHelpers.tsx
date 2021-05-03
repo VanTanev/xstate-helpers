@@ -91,7 +91,7 @@ export function createReactContextHelpers<
     const service = React.useContext(machineServiceContext);
     if (!service) {
       throw new Error(
-        `Machine service ${displayName} is not available, make sure you use are calling it as a child of the context provider`
+        `Machine interpreter ${displayName} is not available, make sure you use are calling this function as a child of the machine provider.`
       );
     }
 
