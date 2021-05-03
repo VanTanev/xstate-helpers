@@ -15,11 +15,12 @@ npm install xstate-helpers
 ```typescript
 // ExampleProvider.tsx
 
-import { useInterpret } from '@xstate/react';
-import { useAuthContext } from 'auth/Auth';
 import React from 'react';
-import { useErrorHandler } from 'react-error-boundary';
+import { useInterpret } from '@xstate/react';
 import { createReactContextHelpers } from 'xstate-helpers';
+import { useErrorHandler } from 'react-error-boundary';
+
+import { useAuth } from 'auth';
 import { exampleMachine } from './example.machine';
 
 export const {
@@ -28,7 +29,7 @@ export const {
   useService: useExampleService,
   useSelector: useExampleSelector,
 } = createReactContextHelpers('Example', (props: { name: string }) => {
-  const auth = useAuthContext();
+  const auth = useAuth();
   const handleError = useErrorHandler();
   const interpreter = useInterpret(exampleMachine, {
     context: { name: props.name },
@@ -38,8 +39,8 @@ export const {
   });
 
   React.useEffect(() => {
-    service.send({ type: 'SET_USER', user: auth.user });
-  }, [service, auth.user]);
+    interpreter.send({ type: 'SET_USER', user: auth.user });
+  }, [interpreter, auth.user]);
 
   return interpreter;
 });
@@ -49,22 +50,30 @@ export default ExampleProvider;
 
 ```typescript
 // App.tsx
-import React from 'react'
+import React from 'react';
 
-import ExampleProvider, { useExampleInterpreter, useExampleService, useExampleSelector } from './ExampleProvider'
+import ExampleProvider, {
+  useExampleInterpreter,
+  useExampleService,
+  useExampleSelector,
+} from './ExampleProvider';
 
 const App: React.FC = () => {
-  return <ExampleProvider name="Example">
-    <Component>
-  </ExampleProvider>
-}
+  return (
+    <ExampleProvider name="Example">
+      <Component />
+    </ExampleProvider>
+  );
+};
 
 const Component: React.FC = () => {
   const interpreter = useExampleInterpreter();
   const [state, send] = useExampleService();
-  const name = useExampleSelector(React.useCallback(state => state.context.name, []));
+  const name = useExampleSelector(
+    React.useCallback(state => state.context.name, [])
+  );
   // ...
-}
+};
 ```
 
 ### useIsXStateTransitionAvailable()
