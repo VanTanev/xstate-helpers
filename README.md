@@ -12,6 +12,10 @@ npm install xstate-helpers
 
 ### createReactContextHelpers()
 
+`createReactContextHelpers` creates a set of helpers that make it easy to share and access a machine through React context. 
+
+Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter`, `useSend`, `useService`, and `useSelector` hooks which are initialized to the machine.
+
 ```typescript
 // ExampleProvider.tsx
 
