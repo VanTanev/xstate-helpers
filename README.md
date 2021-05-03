@@ -28,6 +28,7 @@ export const {
   useInterpreter: useExampleInterpreter,
   useService: useExampleService,
   useSelector: useExampleSelector,
+  useSend: useExampleSend,
 } = createReactContextHelpers('Example', (props: { name: string }) => {
   const auth = useAuth();
   const handleError = useErrorHandler();
@@ -67,8 +68,15 @@ const App: React.FC = () => {
 };
 
 const Component: React.FC = () => {
+  // the raw interpreter
   const interpreter = useExampleInterpreter();
+  // just the send method, for components that don't need to read state
+  const send = useExampleInterpreter();
+  // a pre-bound `useService()` hook for when you need the whole state
   const [state, send] = useExampleService();
+  // a better pre-bound selector, that preserves proper types when React.useCallback() is used!
+  // Favor using this over `useExampleService()` when possible, because selectors cause rerender
+  // only when the selected value changes, while `useExampleService()` rerenders on every machine change.
   const name = useExampleSelector(
     React.useCallback(state => state.context.name, [])
   );

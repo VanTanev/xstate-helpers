@@ -34,6 +34,7 @@ export type XStateReactContextHelpers<
     State<TContext, TEvent, any, TTypestate>,
     PayloadSender<TEvent>
   ];
+  useSend: () => PayloadSender<TEvent>;
 };
 export function createReactContextHelpers<
   TContext,
@@ -83,6 +84,7 @@ export function createReactContextHelpers<
       return useSelector(useInterpreter(), selector, compare);
     },
     useService: () => useService(useInterpreter()),
+    useSend: () => useInterpreter().send,
   };
 
   //////////////////////////////

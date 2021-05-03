@@ -33,6 +33,7 @@ describe('createReactContextHelpers', () => {
     useInterpreter: useExampleInterpreter,
     useService: useExampleService,
     useSelector: useExampleSelector,
+    useSend: useExampleSend,
   } = createReactContextHelpers('ExampleMachine', () => {
     return useInterpret(exampleMachine);
   });
@@ -78,6 +79,31 @@ describe('createReactContextHelpers', () => {
   test('useService', async () => {
     const App: React.FC = () => {
       const [state, send] = useExampleService();
+      return (
+        <div>
+          <button onClick={() => send('TOGGLE')}>toggle</button>
+          <span>state: {state.value}</span>
+        </div>
+      );
+    };
+
+    render(
+      <ExampleProvider>
+        <App />
+      </ExampleProvider>
+    );
+
+    expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
+
+    userEvent.click(screen.getByText(/toggle/i));
+
+    expect(screen.getByText(/state/i)).toHaveTextContent('state: started');
+  });
+
+  test('useSend', async () => {
+    const App: React.FC = () => {
+      const send = useExampleSend();
+      const [state] = useService(useExampleInterpreter());
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
