@@ -50,7 +50,8 @@
   "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/test/jest-setup.js"
-    ]
+    ],
+    "testEnvironment": "jest-environment-jsdom-fifteen"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.10.2",
@@ -63,6 +64,7 @@
     "@xstate/inspect": "^0.4.1",
     "@xstate/react": "^1.3.2",
     "husky": "^6.0.0",
+    "jest-environment-jsdom-fifteen": "^1.0.2",
     "lint-staged": "^10.5.4",
     "npm-run-all": "^4.1.5",
     "react": "^17.0.2",
