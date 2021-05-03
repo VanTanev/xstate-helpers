@@ -10,6 +10,63 @@ npm install xstate-helpers
 
 ## API Reference
 
+### createReactContextHelpers()
+
+```typescript
+// ExampleProvider.tsx
+
+import { useInterpret } from '@xstate/react';
+import { useAuthContext } from 'auth/Auth';
+import React from 'react';
+import { useErrorHandler } from 'react-error-boundary';
+import { createReactContextHelpers } from 'xstate-helpers';
+import { exampleMachine } from './example.machine';
+
+export const {
+  Provider: ExampleProvider,
+  useInterpreter: useExampleInterpreter,
+  useService: useExampleService,
+  useSelector: useExampleSelector,
+} = createReactContextHelpers('Example', (props: { name: string }) => {
+  const auth = useAuthContext();
+  const handleError = useErrorHandler();
+  const interpreter = useInterpret(exampleMachine, {
+    context: { name: props.name },
+    actions: {
+      handleCriticalError: (_, e) => handleError(e.data),
+    },
+  });
+
+  React.useEffect(() => {
+    service.send({ type: 'SET_USER', user: auth.user });
+  }, [service, auth.user]);
+
+  return interpreter;
+});
+
+export default ExampleProvider;
+```
+
+```typescript
+// App.tsx
+import React from 'react'
+
+import ExampleProvider, { useExampleInterpreter, useExampleService, useExampleSelector } from './ExampleProvider'
+
+const App: React.FC = () => {
+  return <ExampleProvider name="Example">
+    <Component>
+  </ExampleProvider>
+}
+
+const Component: React.FC = () => {
+  const interpreter = useExampleInterpreter();
+  const [state, send] = useExampleService();
+  const name = useExampleSelector(React.useCallback(state => state.context.name, []));
+  // ...
+}
+```
+
 ### useIsXStateTransitionAvailable()
 
 Check if a state transition is availalbe from the current machine state
