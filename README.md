@@ -10,6 +10,84 @@ npm install xstate-helpers
 
 ## API Reference
 
+### createReactContextHelpers()
+
+`createReactContextHelpers` creates a set of helpers that make it easy to share and access a machine through React context.
+
+Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter`, `useSend`, `useService`, and `useSelector` hooks which are initialized to the machine.
+
+```typescript
+// ExampleProvider.tsx
+
+import React from 'react';
+import { useInterpret } from '@xstate/react';
+import { createReactContextHelpers } from 'xstate-helpers';
+import { useErrorHandler } from 'react-error-boundary';
+
+import { useAuth } from 'auth';
+import { exampleMachine } from './example.machine';
+
+export const {
+  Provider: ExampleProvider,
+  useInterpreter: useExampleInterpreter,
+  useService: useExampleService,
+  useSelector: useExampleSelector,
+  useSend: useExampleSend,
+} = createReactContextHelpers('Example', (props: { name: string }) => {
+  const auth = useAuth();
+  const handleError = useErrorHandler();
+  const interpreter = useInterpret(exampleMachine, {
+    context: { name: props.name },
+    actions: {
+      handleCriticalError: (_, e) => handleError(e.data),
+    },
+  });
+
+  React.useEffect(() => {
+    interpreter.send({ type: 'SET_USER', user: auth.user });
+  }, [interpreter, auth.user]);
+
+  return interpreter;
+});
+
+export default ExampleProvider;
+```
+
+```typescript
+// App.tsx
+import React from 'react';
+
+import ExampleProvider, {
+  useExampleInterpreter,
+  useExampleService,
+  useExampleSelector,
+} from './ExampleProvider';
+
+const App: React.FC = () => {
+  return (
+    <ExampleProvider name="Example">
+      <Component />
+    </ExampleProvider>
+  );
+};
+
+const Component: React.FC = () => {
+  // the raw interpreter
+  const interpreter = useExampleInterpreter();
+  // just the send method, for components that don't need to read state
+  const send = useExampleSend();
+  // a pre-bound `useService()` hook for when you need the whole state
+  const [state, send] = useExampleService();
+  // a better pre-bound selector, that preserves proper types when React.useCallback() is used!
+  // Favor using this over `useExampleService()` when possible, because selectors cause rerender
+  // only when the selected value changes, while `useExampleService()` rerenders on every machine change.
+  const name = useExampleSelector(
+    React.useCallback(state => state.context.name, [])
+  );
+  // ...
+};
+```
+
 ### useIsXStateTransitionAvailable()
 
 Check if a state transition is availalbe from the current machine state
