@@ -14,7 +14,7 @@ npm install xstate-helpers
 
 `createReactContextHelpers` creates a set of helpers that make it easy to share and access a machine through React context.
 
-Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter`, `useSend`, `useService`, and `useSelector` hooks which are initialized to the machine.
+Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter()`, `useSend()`, `useService()`, and `useSelector()` hooks which are initialized to the machine.
 
 ```typescript
 // ExampleProvider.tsx
@@ -90,7 +90,7 @@ const Component: React.FC = () => {
 
 ### useIsXStateTransitionAvailable()
 
-Check if a state transition is availalbe from the current machine state
+Check if a state transition is available from the current machine state.
 
 ```typescript
 import { createMachine } from 'xstate';
@@ -148,7 +148,7 @@ useIsXStateTransitionAvailable(service, {
 
 ### invariantEvent()
 
-Force an event to be handled as if it was of particular type.
+Force an event to be handled as if it was of aparticular type.
 Will throw a runtime exception if the given event does not match the expected event.
 
 ```typescript
@@ -223,8 +223,8 @@ const machine = createMachine<Context, Event>(
 
 ### assertEvent()
 
-Force an event to be handled as if it was of particular type.
-Does not actually enforce the type at runtime, just appeases TypeScript.
+Force an event to be handled as if it was of a particular type.
+This function does not enforce the type at runtime. It's used just to appease TypeScript.
 
 > Warning!
 > This just blindly asserts a type, without any runtime validation.
