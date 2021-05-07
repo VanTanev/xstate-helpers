@@ -26,6 +26,7 @@
     "@xstate/inspect": ">=0.4.0",
     "@xstate/react": ">=1.3.0",
     "react": ">=16",
+    "react-dom": ">=16",
     "xstate": "^4.15.0"
   },
   "prettier": {
