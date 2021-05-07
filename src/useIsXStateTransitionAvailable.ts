@@ -9,19 +9,16 @@ export function useIsXStateTransitionAvailable<
   service:
     | Interpreter<any, any, TEvent, any>
     | (ActorRef<TEvent> & { machine?: StateMachine<any, any, TEvent, any> }),
-  event: TEventType | TEvent
+  event: TEventType | TEvent,
 ): boolean {
   if (!service.machine) {
     throw new Error(
-      'The service given to useIsXStateTransitionAvailable() must be a state machine instance.'
+      'The service given to useIsXStateTransitionAvailable() must be a state machine instance.',
     );
   }
 
   return useSelector<typeof service, boolean>(
     service,
-    useCallback(state => !!service.machine!.transition(state, event).changed, [
-      service,
-      event,
-    ])
+    useCallback(state => !!service.machine!.transition(state, event).changed, [service, event]),
   );
 }

@@ -1,12 +1,6 @@
 import React from 'react';
 import { useService, useSelector } from '@xstate/react';
-import {
-  State,
-  EventObject,
-  Interpreter,
-  Typestate,
-  PayloadSender,
-} from 'xstate';
+import { State, EventObject, Interpreter, Typestate, PayloadSender } from 'xstate';
 
 type MaybeLazy<T, P> = T | ((providerProps: P) => T);
 
@@ -28,12 +22,9 @@ export type XStateReactContextHelpers<
   useInterpreter: () => Interpreter<TContext, any, TEvent, TTypestate>;
   useSelector: <T>(
     selector: (state: State<TContext, TEvent, TTypestate>) => T,
-    compare?: (a: T, b: T) => boolean
+    compare?: (a: T, b: T) => boolean,
   ) => T;
-  useService: () => [
-    State<TContext, TEvent, any, TTypestate>,
-    PayloadSender<TEvent>
-  ];
+  useService: () => [State<TContext, TEvent, any, TTypestate>, PayloadSender<TEvent>];
   useSend: () => PayloadSender<TEvent>;
 };
 export function createReactContextHelpers<
@@ -51,35 +42,28 @@ export function createReactContextHelpers<
    *
    * You should use `useInterpret()` from `@xstate/react`. You can pass options to it as normal
    */
-  getInterpreter: MaybeLazy<
-    Interpreter<TContext, any, TEvent, TTypestate>,
-    ProviderProps
-  >
+  getInterpreter: MaybeLazy<Interpreter<TContext, any, TEvent, TTypestate>, ProviderProps>,
 ): XStateReactContextHelpers<TContext, TEvent, TTypestate, ProviderProps> {
-  const machineServiceContext = React.createContext<
-    Interpreter<TContext, any, TEvent, TTypestate>
-  >(null!);
+  const machineServiceContext = React.createContext<Interpreter<TContext, any, TEvent, TTypestate>>(
+    null!,
+  );
   machineServiceContext.displayName = displayName;
 
   return {
     Provider: function(props: React.PropsWithChildren<ProviderProps>) {
       const interpreter: Interpreter<TContext, any, TEvent, TTypestate> =
-        typeof getInterpreter === 'function'
-          ? getInterpreter(props)
-          : getInterpreter;
+        typeof getInterpreter === 'function' ? getInterpreter(props) : getInterpreter;
 
       return (
         <machineServiceContext.Provider value={interpreter}>
-          {typeof props.children == 'function'
-            ? props.children({ interpreter })
-            : props.children}
+          {typeof props.children == 'function' ? props.children({ interpreter }) : props.children}
         </machineServiceContext.Provider>
       );
     },
     useInterpreter,
     useSelector: function<T>(
       selector: (state: State<TContext, TEvent, TTypestate>) => T,
-      compare?: (a: T, b: T) => boolean
+      compare?: (a: T, b: T) => boolean,
     ): T {
       return useSelector(useInterpreter(), selector, compare);
     },
@@ -93,7 +77,7 @@ export function createReactContextHelpers<
     const service = React.useContext(machineServiceContext);
     if (!service) {
       throw new Error(
-        `Machine interpreter ${displayName} is not available, make sure you use are calling this function as a child of the machine provider.`
+        `Machine interpreter ${displayName} is not available, make sure you use are calling this function as a child of the machine provider.`,
       );
     }
 

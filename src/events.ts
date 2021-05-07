@@ -1,63 +1,49 @@
 import { EventObject, ExtractEvent } from 'xstate';
 
-export function assertEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(
+export function assertEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
   event: TEvent,
-  type: TEventType
+  type: TEventType,
 ): asserts event is ExtractEvent<TEvent, TEventType>;
-export function assertEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(
+export function assertEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
   event: TEvent,
-  type: TEventType[]
+  type: TEventType[],
 ): asserts event is ExtractEvent<TEvent, TEventType>;
 export function assertEvent<TEvent extends EventObject>(
   _event: TEvent,
-  _types: string | string[]
+  _types: string | string[],
 ) {}
 
-export function invariantEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(
+export function invariantEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
   event: TEvent,
-  type: TEventType
+  type: TEventType,
 ): asserts event is ExtractEvent<TEvent, TEventType>;
-export function invariantEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(
+export function invariantEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
   event: TEvent,
-  type: TEventType[]
+  type: TEventType[],
 ): asserts event is ExtractEvent<TEvent, TEventType>;
 export function invariantEvent<TEvent extends EventObject>(
   event: TEvent,
-  types: string | string[]
+  types: string | string[],
 ): void {
   types = Array.isArray(types) ? types : [types];
   if (!types.includes(event.type)) {
     throw new Error(
-      `Expected event${types.length > 1 ? 's' : ''} "${types.join(
-        ', '
-      )}" but got "${event.type}".`
+      `Expected event${types.length > 1 ? 's' : ''} "${types.join(', ')}" but got "${event.type}".`,
     );
   }
 }
 
-export function isEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(event: TEvent, type: TEventType): event is ExtractEvent<TEvent, TEventType>;
-export function isEvent<
-  TEvent extends EventObject,
-  TEventType extends TEvent['type']
->(event: TEvent, type: TEventType[]): event is ExtractEvent<TEvent, TEventType>;
+export function isEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
+  event: TEvent,
+  type: TEventType,
+): event is ExtractEvent<TEvent, TEventType>;
+export function isEvent<TEvent extends EventObject, TEventType extends TEvent['type']>(
+  event: TEvent,
+  type: TEventType[],
+): event is ExtractEvent<TEvent, TEventType>;
 export function isEvent<TEvent extends EventObject>(
   event: TEvent,
-  types: string | string[]
+  types: string | string[],
 ): boolean {
   types = Array.isArray(types) ? types : [types];
   return types.includes(event.type);
