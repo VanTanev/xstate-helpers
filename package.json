@@ -29,12 +29,6 @@
     "react-dom": ">=16",
     "xstate": "^4.15.0"
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "name": "xstate-helpers",
   "author": "Ivan Tanev",
   "module": "dist/xstate-helpers.esm.js",
