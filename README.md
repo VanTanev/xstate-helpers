@@ -88,6 +88,30 @@ const Component: React.FC = () => {
 };
 ```
 
+### XStateInspectLoader
+
+An easy way to add the XState Inspector directly to your React app
+
+```typescript
+import React from 'react';
+import { XStateInspectLoader } from 'xstate-helpers';
+
+const App = () => {
+  return (
+    <XStateInspectLoader>
+      <YourComponents />
+    </XStateInspectLoader>
+  );
+};
+```
+
+Then you can enable/disable the inspector by using the browser's console:
+
+```
+XStateInspector.enable()
+XStateInspector.disable()
+```
+
 ### useIsXStateTransitionAvailable()
 
 Check if a state transition is available from the current machine state.
