@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { InspectorOptions } from '@xstate/inspect';
 import { useLocalStorage } from './useLocalStorage';
 
-type XStateInspectLoaderProps = {
+export type XStateInspectLoaderProps = {
   initialIsEnabled?: boolean;
   wrapperElement?: string | Element;
   styles?: React.CSSProperties;
