@@ -20,7 +20,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   children,
   initialIsEnabled = false,
   wrapperElement,
-  forceEnabled = false,
+  forceEnabled,
   styles,
 }) => {
   const [isEnabled, setIsEnabled] = React.useState(
@@ -81,7 +81,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         ReactDOM.unmountComponentAtNode(wrapperElement);
       }
     };
-  }, [forceEnabled, isEnabled]);
+  }, [isEnabled]);
   return isEnabled && loading ? null : <>{children}</>;
 };
 
