@@ -80,7 +80,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
     };
   }, [forceEnabled, isEnabled]);
-  return isEnabled && loading ? null : <>{children}</>;
+  return (isEnabled || forceEnabled) && loading ? null : <>{children}</>;
 };
 
 const defaultStyles: React.CSSProperties = {
