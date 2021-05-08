@@ -1,10 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { InspectorOptions } from '@xstate/inspect';
-import { useLocalStorage } from './useLocalStorage';
+
+const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
 
 export type XStateInspectLoaderProps = {
+  /**
+   * Initialize as enabled when we don't have a value stored in local storage?
+   */
   initialIsEnabled?: boolean;
+  /**
+   * Ignore the console interface and always enable the inspector
+   */
+  forceEnabled?: boolean;
   wrapperElement?: string | Element;
   styles?: React.CSSProperties;
 };
@@ -12,25 +20,34 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   children,
   initialIsEnabled = false,
   wrapperElement,
+  forceEnabled = false,
   styles,
 }) => {
-  const [isEnabled, setIsEnabled] = useLocalStorage<boolean>(
-    'xstateHelpersInspectorOpen',
-    initialIsEnabled
+  const [isEnabled, setIsEnabled] = React.useState(() =>
+    getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
   );
   React.useEffect(() => {
     // expose an interface for setting open/closed directly on console
     (window as any).XStateInspector = {
-      enable: () => setIsEnabled(true),
-      disable: () => setIsEnabled(false),
+      enable: () => {
+        setIsEnabled(true);
+        setItem(LOCAL_STORAGE_KEY, true);
+      },
+      disable: () => {
+        setIsEnabled(false);
+        setItem(LOCAL_STORAGE_KEY, false);
+      },
     };
   }, [setIsEnabled]);
 
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
-    let active = true;
+    let active = true; // keep track if this effect was cleaned up
     import('@xstate/inspect').then(({ inspect }) => {
-      if (!active || !isEnabled) {
+      if (!active) {
+        return;
+      }
+      if (!forceEnabled && !isEnabled) {
         return;
       }
 
@@ -41,7 +58,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
 
           if (!wrapperElement) {
             console.error(
-              'Cannot initialize XStateInspectorLoader, invalid wrapperElement selector given'
+              'Cannot initialize XStateInspectorLoader, invalid wrapperElement selector given',
             );
             return;
           }
@@ -52,10 +69,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         document.body.insertBefore(wrapperElement, document.body.firstChild);
       }
 
-      ReactDOM.render(
-        <XStateInspector styles={styles} inspect={inspect} />,
-        wrapperElement
-      );
+      ReactDOM.render(<XStateInspector styles={styles} inspect={inspect} />, wrapperElement);
       setLoading(false);
     });
 
@@ -65,7 +79,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         ReactDOM.unmountComponentAtNode(wrapperElement);
       }
     };
-  }, [isEnabled]);
+  }, [forceEnabled, isEnabled]);
   return isEnabled && loading ? null : <>{children}</>;
 };
 
@@ -94,3 +108,20 @@ const XStateInspector: React.FC<{
     </div>
   );
 };
+
+function getItem<T>(key: string, defaultValue: T): T {
+  let initialValue: T | undefined = undefined;
+  try {
+    initialValue = JSON.parse(localStorage.getItem(key)!);
+  } catch {}
+  if (typeof initialValue === 'undefined' || initialValue === null) {
+    return defaultValue;
+  } else {
+    return initialValue;
+  }
+}
+function setItem<T>(key: string, value: T): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
