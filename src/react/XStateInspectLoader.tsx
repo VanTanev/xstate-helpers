@@ -23,9 +23,14 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   forceEnabled = false,
   styles,
 }) => {
-  const [isEnabled, setIsEnabled] = React.useState(() =>
-    getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
+  const [isEnabled, setIsEnabled] = React.useState(
+    () => forceEnabled ?? getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
   );
+  React.useEffect(() => {
+    if (forceEnabled !== undefined) {
+      setIsEnabled(forceEnabled);
+    }
+  }, [forceEnabled]);
   React.useEffect(() => {
     // expose an interface for setting open/closed directly on console
     (window as any).XStateInspector = {
@@ -44,10 +49,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   React.useEffect(() => {
     let active = true; // keep track if this effect was cleaned up
     import('@xstate/inspect').then(({ inspect }) => {
-      if (!active) {
-        return;
-      }
-      if (!forceEnabled && !isEnabled) {
+      if (!active || !isEnabled) {
         return;
       }
 
@@ -80,7 +82,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
     };
   }, [forceEnabled, isEnabled]);
-  return (isEnabled || forceEnabled) && loading ? null : <>{children}</>;
+  return isEnabled && loading ? null : <>{children}</>;
 };
 
 const defaultStyles: React.CSSProperties = {
