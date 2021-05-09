@@ -81,9 +81,7 @@ const Component: React.FC = () => {
   // a better pre-bound selector, that preserves proper types when React.useCallback() is used!
   // Favor using this over `useExampleService()` when possible, because selectors cause rerender
   // only when the selected value changes, while `useExampleService()` rerenders on every machine change.
-  const name = useExampleSelector(
-    React.useCallback(state => state.context.name, [])
-  );
+  const name = useExampleSelector(React.useCallback(state => state.context.name, []));
   // ...
 };
 ```
@@ -111,6 +109,15 @@ Then you can enable/disable the inspector by using the browser's console:
 XStateInspector.enable()
 XStateInspector.disable()
 ```
+
+#### `<XStateInspectLoader>` props:
+
+| Prop               | Type                   | Description                                                                                                                                                    |
+| :----------------- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wrapperElement`   | `string \| DivElement` | **Optional**. `DOM Selector string` or `DIVElement` to put the inspector into. If ommitted, inspector is placed as the first child of `<body>`                 |
+| `styles`           | `React.CSSProperties`  | **Optional**. CSS styles for the inner wrapping DIV of the inspector iframe.                                                                                   |
+| `initialIsEnabled` | `boolean`              | **Optional**. Should the inspector initialize open the first time it's used. Afterwards, the console XStateInspector.enabled()/disabled() API takes precedence |
+| `forceEnabled`     | `boolean`              | **Optional**. Force the inspector into enabled/disabled state, regardless of console XStateInspector setting.                                                  |
 
 ### useIsXStateTransitionAvailable()
 
@@ -140,7 +147,7 @@ const [state, send, service] = useMachine(
         },
       },
     },
-  })
+  }),
 );
 
 // true
@@ -172,7 +179,7 @@ useIsXStateTransitionAvailable(service, {
 
 ### invariantEvent()
 
-Force an event to be handled as if it was of aparticular type.
+Force an event to be handled as if it was of a particular type.
 Will throw a runtime exception if the given event does not match the expected event.
 
 ```typescript
@@ -199,7 +206,7 @@ const machine = createMachine<Context, Event>(
         },
       }),
     },
-  }
+  },
 );
 ```
 
@@ -278,7 +285,7 @@ const machine = createMachine<Context, Event>(
         },
       }),
     },
-  }
+  },
 );
 ```
 

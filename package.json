@@ -45,8 +45,7 @@
   "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/test/jest-setup.js"
-    ],
-    "testEnvironment": "jest-environment-jsdom-fifteen"
+    ]
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.10.2",

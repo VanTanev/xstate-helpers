@@ -4,6 +4,16 @@ import { InspectorOptions } from '@xstate/inspect';
 
 const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
 
+// declare global {
+declare global {
+  interface Window {
+    XStateInspector: {
+      enable: () => void;
+      disable: () => void;
+    };
+  }
+}
+
 export type XStateInspectLoaderProps = {
   /**
    * Initialize as enabled when we don't have a value stored in local storage?
