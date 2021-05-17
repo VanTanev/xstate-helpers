@@ -178,6 +178,39 @@ useIsXStateTransitionAvailable(service, {
 | `service` | An interpreted machine or a spawned machine | **Required**. |
 | `event`   | EventObject or EventType                    | **Required**. |
 
+### machineFromReducer()
+
+Generate a state machine from a reducer
+
+```typescript
+type State = {
+  status: 'pending' | 'loggedIn' | 'loggedOut';
+  user: { username: string } | null;
+};
+type Action = { type: 'LOGIN'; payload: { username: string } } | { type: 'LOGOUT' };
+const authReducer = (_: State, action: Action): State => {
+  switch (action.type) {
+    case 'LOGIN':
+      return { status: 'loggedIn', user: action.payload };
+    case 'LOGOUT':
+      return { status: 'loggedOut', user: null };
+  }
+};
+
+const authMachine = machineFromReducer(auth, { status: 'pending', user: null });
+expect(machine.initialState.context).toEqual({ status: 'pending', user: null });
+
+const service = interpret(authMachine);
+expect(service.initialState.context).toEqual({ status: 'pending', user: null });
+
+service.start();
+
+service.send({ type: 'LOGIN', payload: { username: 'John' } });
+expect(service.state.context).toEqual({ status: 'loggedIn', user: { username: 'John' } });
+service.send({ type: 'LOGOUT' });
+expect(service.state.context).toEqual({ status: 'loggedOut', user: null });
+```
+
 ### invariantEvent()
 
 Force an event to be handled as if it was of a particular type.
