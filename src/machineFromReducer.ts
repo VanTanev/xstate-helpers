@@ -1,13 +1,11 @@
 import { createMachine, assign, StateMachine } from 'xstate';
-
-type ReducerWithoutAction<S> = (prevState: S) => S;
-type ReducerStateWithoutAction<
-  R extends ReducerWithoutAction<any>
-> = R extends ReducerWithoutAction<infer S> ? S : never;
-
-type Reducer<S, A> = (prevState: S, action: A) => S;
-type ReducerState<R extends Reducer<any, any>> = R extends Reducer<infer S, any> ? S : never;
-type ReducerAction<R extends Reducer<any, any>> = R extends Reducer<any, infer A> ? A : never;
+import {
+  Reducer,
+  ReducerWithoutAction,
+  ReducerState,
+  ReducerStateWithoutAction,
+  ReducerAction,
+} from './types';
 
 export function machineFromReducer<R extends ReducerWithoutAction<any>>(
   reducer: R,

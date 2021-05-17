@@ -178,6 +178,54 @@ useIsXStateTransitionAvailable(service, {
 | `service` | An interpreted machine or a spawned machine | **Required**. |
 | `event`   | EventObject or EventType                    | **Required**. |
 
+### actorFromReducer()
+
+Generate an Actor from a reducer
+
+```typescript
+type State = {
+  status: 'pending' | 'loggedIn' | 'loggedOut';
+  user: { username: string } | null;
+};
+type Action = { type: 'LOGIN'; payload: { username: string } } | { type: 'LOGOUT' };
+const authReducer = (_: State, action: Action): State => {
+  switch (action.type) {
+    case 'LOGIN':
+      return { status: 'loggedIn', user: action.payload };
+    case 'LOGOUT':
+      return { status: 'loggedOut', user: null };
+  }
+};
+
+const App = () => {
+  const [state, send] = useActor(actorFromReducer(authReducer), { status: 'pending', user: null });
+
+  return (
+    <div>
+      <pre>{JSON.stringify(state, null, 2)}</pre>
+
+      <button
+        type="button"
+        onClick={() => {
+          send({ type: 'LOGIN', payload: { username: 'John' } });
+        }}
+      >
+        Login
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          send({ type: 'LOGOUT' });
+        }}
+      >
+        Logout
+      </button>
+    </div>
+  );
+};
+```
+
 ### machineFromReducer()
 
 Generate a state machine from a reducer
