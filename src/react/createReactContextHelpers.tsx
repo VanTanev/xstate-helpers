@@ -19,6 +19,7 @@ export type XStateReactContextHelpers<
         | React.ReactNode;
     }
   >;
+  ReactContext: React.Context<Interpreter<TContext, any, TEvent, TTypestate>>;
   useInterpreter: () => Interpreter<TContext, any, TEvent, TTypestate>;
   useSelector: <T>(
     selector: (state: State<TContext, TEvent, TTypestate>) => T,
@@ -50,6 +51,7 @@ export function createReactContextHelpers<
   machineServiceContext.displayName = displayName;
 
   return {
+    ReactContext: machineServiceContext,
     Provider: function(props: React.PropsWithChildren<ProviderProps>) {
       const interpreter: Interpreter<TContext, any, TEvent, TTypestate> =
         typeof getInterpreter === 'function' ? getInterpreter(props) : getInterpreter;

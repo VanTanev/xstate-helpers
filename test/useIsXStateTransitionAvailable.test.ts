@@ -37,27 +37,23 @@ describe('useIsXStateTransitionAvailable', () => {
             },
           },
         },
-      })
+      }),
     );
   });
 
   test('simple transition', () => {
-    const { result } = renderHook(() =>
-      useIsXStateTransitionAvailable(service, 'GO_TO_STATE_TWO')
-    );
+    const { result } = renderHook(() => useIsXStateTransitionAvailable(service, 'GO_TO_STATE_TWO'));
     expect(result.current).toBe(true);
   });
 
   it('impossible transition', () => {
-    const { result } = renderHook(() =>
-      useIsXStateTransitionAvailable(service, 'GO_TO_STATE_ONE')
-    );
+    const { result } = renderHook(() => useIsXStateTransitionAvailable(service, 'GO_TO_STATE_ONE'));
     expect(result.current).toBe(false);
   });
 
   it('non-existant event', () => {
     const { result } = renderHook(() =>
-      useIsXStateTransitionAvailable(service, 'I_DONT_EXIST' as any)
+      useIsXStateTransitionAvailable(service, 'I_DONT_EXIST' as any),
     );
     expect(result.current).toBe(false);
   });
@@ -67,7 +63,7 @@ describe('useIsXStateTransitionAvailable', () => {
       useIsXStateTransitionAvailable(service, {
         type: 'PARAMETIZED_GO_TO_STATE_TWO',
         parameter: true,
-      })
+      }),
     );
     expect(result.current).toBe(true);
   });
@@ -77,15 +73,13 @@ describe('useIsXStateTransitionAvailable', () => {
       useIsXStateTransitionAvailable(service, {
         type: 'PARAMETIZED_GO_TO_STATE_TWO',
         parameter: false,
-      })
+      }),
     );
     expect(result.current).toBe(false);
   });
 
   it('throws for invalid parameters', () => {
-    const { result } = renderHook(() =>
-      useIsXStateTransitionAvailable({} as any, '')
-    );
+    const { result } = renderHook(() => useIsXStateTransitionAvailable({} as any, ''));
     expect(result.error?.message).toMatch('must be a state machine instance');
   });
 });

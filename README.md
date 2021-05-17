@@ -29,6 +29,7 @@ import { exampleMachine } from './example.machine';
 
 export const {
   Provider: ExampleProvider,
+  ReactContext: ExampleContext,
   useInterpreter: useExampleInterpreter,
   useService: useExampleService,
   useSelector: useExampleSelector,

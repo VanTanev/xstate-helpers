@@ -44,12 +44,10 @@ describe('createReactContextHelpers', () => {
         {({ interpreter }) => {
           return <p>initial state: {interpreter.initialState.value}</p>;
         }}
-      </ExampleProvider>
+      </ExampleProvider>,
     );
 
-    expect(screen.getByText(/initial state/i)).toHaveTextContent(
-      'initial state: stopped'
-    );
+    expect(screen.getByText(/initial state/i)).toHaveTextContent('initial state: stopped');
   });
 
   test('useInterpreter', async () => {
@@ -66,7 +64,7 @@ describe('createReactContextHelpers', () => {
     render(
       <ExampleProvider>
         <App />
-      </ExampleProvider>
+      </ExampleProvider>,
     );
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
@@ -90,7 +88,7 @@ describe('createReactContextHelpers', () => {
     render(
       <ExampleProvider>
         <App />
-      </ExampleProvider>
+      </ExampleProvider>,
     );
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
@@ -115,7 +113,7 @@ describe('createReactContextHelpers', () => {
     render(
       <ExampleProvider>
         <App />
-      </ExampleProvider>
+      </ExampleProvider>,
     );
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
@@ -127,9 +125,7 @@ describe('createReactContextHelpers', () => {
 
   test('useSelector', async () => {
     const App: React.FC = () => {
-      const name = useExampleSelector(
-        React.useCallback(state => state.context.name, [])
-      );
+      const name = useExampleSelector(React.useCallback(state => state.context.name, []));
       return (
         <div>
           <span>name: {name}</span>
@@ -140,7 +136,7 @@ describe('createReactContextHelpers', () => {
     render(
       <ExampleProvider>
         <App />
-      </ExampleProvider>
+      </ExampleProvider>,
     );
 
     expect(screen.getByText(/name/i)).toHaveTextContent('name: John Doe');
@@ -151,15 +147,38 @@ describe('createReactContextHelpers', () => {
       'ExampleMachine',
       ({ age }: { age: number }) => {
         return useInterpret(exampleMachine, { context: { age } });
-      }
+      },
     );
+
     test('with provider props', () => {
       render(
         <ExampleProvider age={33}>
-          {({ interpreter }) => (
-            <p>age: {interpreter.initialState.context.age}</p>
-          )}
-        </ExampleProvider>
+          {({ interpreter }) => <p>age: {interpreter.initialState.context.age}</p>}
+        </ExampleProvider>,
+      );
+
+      expect(screen.getByText(/age/i)).toHaveTextContent('age: 33');
+    });
+  });
+
+  describe('exposes the react context', () => {
+    const { Provider: ExampleProvider, ReactContext: ExampleContext } = createReactContextHelpers(
+      'ExampleMachine',
+      ({ age }: { age: number }) => {
+        return useInterpret(exampleMachine, { context: { age } });
+      },
+    );
+
+    test('raw context', () => {
+      const App = () => {
+        const interpreter = React.useContext(ExampleContext);
+        return <p>age: {interpreter.initialState.context.age}</p>;
+      };
+
+      render(
+        <ExampleProvider age={33}>
+          <App />
+        </ExampleProvider>,
       );
 
       expect(screen.getByText(/age/i)).toHaveTextContent('age: 33');

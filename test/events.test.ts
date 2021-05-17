@@ -30,14 +30,14 @@ describe('invariantEvent', () => {
   it('throws for single event assertion', () => {
     const e = { type: 'EVENT_3', data: true } as Event;
     expect(() => invariantEvent(e, 'EVENT_1')).toThrow(
-      'Expected event "EVENT_1" but got "EVENT_3".'
+      'Expected event "EVENT_1" but got "EVENT_3".',
     );
   });
 
   it('throws for array event assertion', () => {
     const e = { type: 'EVENT_3', data: true } as Event;
     expect(() => invariantEvent(e, ['EVENT_1', 'EVENT_2'])).toThrow(
-      'Expected events "EVENT_1, EVENT_2" but got "EVENT_3".'
+      'Expected events "EVENT_1, EVENT_2" but got "EVENT_3".',
     );
   });
 });
