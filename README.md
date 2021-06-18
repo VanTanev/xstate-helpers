@@ -5,7 +5,7 @@ A collection of helpers for XState (with React).
 ## Installation
 
 ```bash
-npm install xstate-helpers
+npm install xstate-helpers @xstate/inspect
 ```
 
 ## API Reference
