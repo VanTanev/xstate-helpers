@@ -3,7 +3,6 @@
   "license": "MIT",
   "files": [
     "dist",
-    "src",
     "react",
     "events"
   ],
@@ -33,7 +32,6 @@
   "author": "Ivan Tanev",
   "main": "dist/xstate-helpers.cjs.js",
   "module": "dist/xstate-helpers.esm.js",
-  "typings": "dist/index.d.ts",
   "size-limit": [
     {
       "path": "dist/xstate-helpers.cjs.js",

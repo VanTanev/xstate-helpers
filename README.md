@@ -77,7 +77,7 @@ const Component: React.FC = () => {
   const interpreter = useExampleInterpreter();
   // just the send method, for components that don't need to read state
   const send = useExampleSend();
-  // a pre-bound `useActor()` hook for when you need the send() function plus the whole state
+  // a pre-bound `useActor()` hook for when you need the whole state and the send function
   const [state, send] = useExampleActor();
   // a better pre-bound selector, that preserves proper types when React.useCallback() is used!
   // Favor using this over `useExampleActor()` when possible, because selectors cause rerender
