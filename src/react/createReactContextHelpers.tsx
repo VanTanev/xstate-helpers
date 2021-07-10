@@ -1,5 +1,5 @@
 import React from 'react';
-import { useService, useSelector } from '@xstate/react';
+import { useActor, useSelector } from '@xstate/react';
 import { State, EventObject, Interpreter, Typestate, PayloadSender } from 'xstate';
 
 type MaybeLazy<T, P> = T | ((providerProps: P) => T);
@@ -25,7 +25,7 @@ export type XStateReactContextHelpers<
     selector: (state: State<TContext, TEvent, TTypestate>) => T,
     compare?: (a: T, b: T) => boolean,
   ) => T;
-  useService: () => [State<TContext, TEvent, any, TTypestate>, PayloadSender<TEvent>];
+  useActor: () => [State<TContext, TEvent, any, TTypestate>, PayloadSender<TEvent>];
   useSend: () => PayloadSender<TEvent>;
 };
 export function createReactContextHelpers<
@@ -69,7 +69,7 @@ export function createReactContextHelpers<
     ): T {
       return useSelector(useInterpreter(), selector, compare);
     },
-    useService: () => useService(useInterpreter()),
+    useActor: () => useActor(useInterpreter()),
     useSend: () => useInterpreter().send,
   };
 
