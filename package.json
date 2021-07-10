@@ -20,7 +20,7 @@
     "lint-staged": "lint-staged",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "postinstall": "preconstruct dev && preconstruct build"
+    "prepare": "preconstruct dev && preconstruct build"
   },
   "peerDependencies": {
     "@xstate/inspect": ">=0.4.0",
