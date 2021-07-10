@@ -26,7 +26,7 @@ jobs:
         run: yarn lint
 
       - name: Test
-        run: yarn test --ci --coverage --maxWorkers=50%
+        run: yarn test
 
       - name: Build
         run: yarn build
