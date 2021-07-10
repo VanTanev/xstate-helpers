@@ -14,7 +14,7 @@ npm install xstate-helpers
 
 `createReactContextHelpers` creates a set of helpers that make it easy to share and access a machine through React context.
 
-Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter()`, `useSend()`, `useService()`, and `useSelector()` hooks which are initialized to the machine.
+Creates a `React.Context` which provides the machine's interpreter and returns a `Provider` for the context and `useInterpreter()`, `useSend()`, `useActor()`, and `useSelector()` hooks which are initialized to the machine.
 
 ```typescript
 // ExampleProvider.tsx
@@ -31,7 +31,7 @@ export const {
   Provider: ExampleProvider,
   ReactContext: ExampleContext,
   useInterpreter: useExampleInterpreter,
-  useService: useExampleService,
+  useActor: useExampleActor,
   useSelector: useExampleSelector,
   useSend: useExampleSend,
 } = createReactContextHelpers('Example', (props: { name: string }) => {
@@ -60,7 +60,7 @@ import React from 'react';
 
 import ExampleProvider, {
   useExampleInterpreter,
-  useExampleService,
+  useExampleActor,
   useExampleSelector,
 } from './ExampleProvider';
 
@@ -77,11 +77,11 @@ const Component: React.FC = () => {
   const interpreter = useExampleInterpreter();
   // just the send method, for components that don't need to read state
   const send = useExampleSend();
-  // a pre-bound `useService()` hook for when you need the whole state
-  const [state, send] = useExampleService();
+  // a pre-bound `useActor()` hook for when you need the send() function plus the whole state
+  const [state, send] = useExampleActor();
   // a better pre-bound selector, that preserves proper types when React.useCallback() is used!
-  // Favor using this over `useExampleService()` when possible, because selectors cause rerender
-  // only when the selected value changes, while `useExampleService()` rerenders on every machine change.
+  // Favor using this over `useExampleActor()` when possible, because selectors cause rerender
+  // only when the selected value changes, while `useExampleActor()` rerenders on every machine change.
   const name = useExampleSelector(React.useCallback(state => state.context.name, []));
   // ...
 };

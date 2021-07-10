@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createReactContextHelpers } from '../../src/react/createReactContextHelpers';
 import { createMachine } from 'xstate';
-import { useInterpret, useService } from '@xstate/react';
+import { useInterpret, useActor } from '@xstate/react';
 import userEvent from '@testing-library/user-event';
 
 describe('createReactContextHelpers', () => {
@@ -31,7 +31,7 @@ describe('createReactContextHelpers', () => {
   const {
     Provider: ExampleProvider,
     useInterpreter: useExampleInterpreter,
-    useService: useExampleService,
+    useActor: useExampleActor,
     useSelector: useExampleSelector,
     useSend: useExampleSend,
   } = createReactContextHelpers('ExampleMachine', () => {
@@ -52,7 +52,7 @@ describe('createReactContextHelpers', () => {
 
   test('useInterpreter', async () => {
     const App: React.FC = () => {
-      const [state, send] = useService(useExampleInterpreter());
+      const [state, send] = useActor(useExampleInterpreter());
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
@@ -74,9 +74,9 @@ describe('createReactContextHelpers', () => {
     expect(screen.getByText(/state/i)).toHaveTextContent('state: started');
   });
 
-  test('useService', async () => {
+  test('useActor', async () => {
     const App: React.FC = () => {
-      const [state, send] = useExampleService();
+      const [state, send] = useExampleActor();
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
@@ -101,7 +101,7 @@ describe('createReactContextHelpers', () => {
   test('useSend', async () => {
     const App: React.FC = () => {
       const send = useExampleSend();
-      const [state] = useService(useExampleInterpreter());
+      const [state] = useActor(useExampleInterpreter());
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
