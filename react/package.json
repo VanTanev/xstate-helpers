@@ -1,0 +1,4 @@
+{
+  "main": "dist/xstate-helpers-react.cjs.js",
+  "module": "dist/xstate-helpers-react.esm.js"
+}

@@ -1,0 +1,4 @@
+{
+  "main": "dist/xstate-helpers-react-createReactContextHelpers.cjs.js",
+  "module": "dist/xstate-helpers-react-createReactContextHelpers.esm.js"
+}

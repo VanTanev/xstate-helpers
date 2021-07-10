@@ -1,0 +1,4 @@
+{
+  "main": "dist/xstate-helpers-react-XStateInspectLoader.cjs.js",
+  "module": "dist/xstate-helpers-react-XStateInspectLoader.esm.js"
+}

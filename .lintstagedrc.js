@@ -19,7 +19,7 @@ module.exports = {
 
   // equivalent globs for the same set of files, execute in parallel
   '*.{js,jsx,ts,tsx,PARALLEL_1}': files =>
-    `tsdx lint --report-unused-disable-directives --max-warnings=0 ${files
+    `eslint --report-unused-disable-directives --max-warnings=0 ${files
       .filter(file => !cli.isPathIgnored(file))
       .map(f => `"${f}"`)
       .join(' ')}`,

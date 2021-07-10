@@ -4,7 +4,7 @@ import { useSelector } from '@xstate/react';
 
 export function useIsXStateTransitionAvailable<
   TEventType extends TEvent['type'],
-  TEvent extends EventObject = EventObject
+  TEvent extends EventObject = EventObject,
 >(
   service:
     | Interpreter<any, any, TEvent, any>

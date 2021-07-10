@@ -1,0 +1,4 @@
+{
+  "main": "dist/xstate-helpers-events.cjs.js",
+  "module": "dist/xstate-helpers-events.esm.js"
+}
