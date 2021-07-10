@@ -21,7 +21,7 @@ Creates a `React.Context` which provides the machine's interpreter and returns a
 
 import React from 'react';
 import { useInterpret } from '@xstate/react';
-import { createReactContextHelpers } from 'xstate-helpers';
+import { createReactContextHelpers } from 'xstate-helpers/react/createReactContextHelpers';
 import { useErrorHandler } from 'react-error-boundary';
 
 import { useAuth } from 'auth';
@@ -93,7 +93,7 @@ An easy way to add the XState Inspector directly to your React app
 
 ```typescript
 import React from 'react';
-import { XStateInspectLoader } from 'xstate-helpers';
+import { XStateInspectLoader } from 'xstate-helpers/react/XStateInspectLoader';
 
 const App = () => {
   return (
@@ -127,7 +127,7 @@ Check if a state transition is available from the current machine state.
 ```typescript
 import { createMachine } from 'xstate';
 import { useMachine } from '@xstate/react';
-import { useIsXStateTransitionAvailable } from 'xstate-helpers';
+import { useIsXStateTransitionAvailable } from 'xstate-helpers/react/useIsXStateTransitionAvailable';
 
 const [state, send, service] = useMachine(
   createMachine({
@@ -266,7 +266,7 @@ Will throw a runtime exception if the given event does not match the expected ev
 
 ```typescript
 import { createMachine } from 'xstate';
-import { invariantEvent } from 'xstate-helpers';
+import { invariantEvent } from 'xstate-helpers/events';
 
 const machine = createMachine<Context, Event>(
   {
@@ -303,7 +303,7 @@ Check if an event matches the expected event type.
 
 ```typescript
 import { createMachine } from 'xstate';
-import { isEvent } from 'xstate-helpers';
+import { isEvent } from 'xstate-helpers/events';
 
 const machine = createMachine<Context, Event>(
   {
@@ -345,7 +345,7 @@ This function does not enforce the type at runtime. It's used just to appease Ty
 
 ```typescript
 import { createMachine } from 'xstate';
-import { assertEvent } from 'xstate-helpers';
+import { assertEvent } from 'xstate-helpers/events';
 
 const machine = createMachine<Context, Event>(
   {

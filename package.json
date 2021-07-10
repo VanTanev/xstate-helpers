@@ -1,26 +1,26 @@
 {
   "version": "0.11.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "react",
+    "events"
   ],
   "engines": {
     "node": ">=10"
   },
   "repository": "https://github.com:VanTanev/xstate-helpers.git",
   "scripts": {
-    "start": "npm-run-all -p 'watch' 'test --watchAll'",
-    "watch": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
+    "build": "preconstruct build",
+    "dev": "preconstruct dev",
+    "test": "npm-run-all -l -p lint test:jest",
+    "test:jest": "jest test --maxWorkers=50%",
+    "lint": "eslint src test",
     "lint-staged": "lint-staged",
-    "prepare": "husky install && tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "analyze": "size-limit --why",
+    "postinstall": "preconstruct dev && preconstruct build"
   },
   "peerDependencies": {
     "@xstate/inspect": ">=0.4.0",
@@ -31,10 +31,12 @@
   },
   "name": "xstate-helpers",
   "author": "Ivan Tanev",
+  "main": "dist/xstate-helpers.cjs.js",
   "module": "dist/xstate-helpers.esm.js",
+  "typings": "dist/index.d.ts",
   "size-limit": [
     {
-      "path": "dist/xstate-helpers.cjs.production.min.js",
+      "path": "dist/xstate-helpers.cjs.js",
       "limit": "10 KB"
     },
     {
@@ -48,25 +50,50 @@
     ],
     "testEnvironment": "jest-environment-jsdom-fifteen"
   },
+  "preconstruct": {
+    "entrypoints": [
+      "index.tsx",
+      "events.ts",
+      "react/index.tsx",
+      "react/XStateInspectLoader.tsx",
+      "react/useIsXStateTransitionAvailable.ts",
+      "react/createReactContextHelpers.tsx"
+    ]
+  },
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.10.2",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
+    "@preconstruct/cli": "^2.1.0",
+    "@size-limit/preset-small-lib": "^5.0.1",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.2",
     "@testing-library/user-event": "^13.1.8",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
     "@xstate/inspect": "^0.4.1",
     "@xstate/react": "^1.3.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.8.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^6.0.0",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "lint-staged": "^10.5.4",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "size-limit": "^4.10.2",
-    "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4",
     "xstate": "^4.18.0"
@@ -77,5 +104,9 @@
     "**/jest": "^26.6.3",
     "**/ts-jest": "^26.4.4",
     "**/typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "jest": "26",
+    "size-limit": "^5.0.1"
   }
 }

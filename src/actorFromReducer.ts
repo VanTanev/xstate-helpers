@@ -23,9 +23,13 @@ export function actorFromReducer<R extends Reducer<any, any>>(
   let state = initialState;
   let observers = new Set<any>();
   return {
+    id: 'actor-from-reducer',
     send: event => {
       state = reducer(state, event);
       observers.forEach(observer => observer.next(state));
+    },
+    getSnapshot: () => {
+      return state;
     },
     subscribe: (nextHandler: any) => {
       let observer = toObserver(nextHandler);

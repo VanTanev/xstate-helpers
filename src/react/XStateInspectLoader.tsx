@@ -81,7 +81,10 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         document.body.insertBefore(wrapperElement, document.body.firstChild);
       }
 
-      ReactDOM.render(<XStateInspector styles={styles} inspect={inspect} />, wrapperElement);
+      ReactDOM.render(
+        React.createElement(XStateInspector, { styles, inspect }, null),
+        wrapperElement,
+      );
       setLoading(false);
     });
 
@@ -92,7 +95,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
     };
   }, [isEnabled]);
-  return isEnabled && loading ? null : <>{children}</>;
+  return isEnabled && loading ? null : React.createElement(React.Fragment, null, children);
 };
 
 const defaultStyles: React.CSSProperties = {
@@ -109,15 +112,19 @@ const XStateInspector: React.FC<{
     inspect({ iframe: () => ref.current! });
   }, [inspect, ref]);
 
-  return (
-    <div style={styles}>
-      <iframe
-        ref={ref}
-        title="xstate-inspector"
-        style={{ width: '100%', height: '5000px' }}
-        data-xstate
-      ></iframe>
-    </div>
+  return React.createElement(
+    'div',
+    { style: styles },
+    React.createElement(
+      'iframe',
+      {
+        ref,
+        title: 'xstate-inspector',
+        style: { width: '100%', height: '5000px' },
+        'data-xstate': true,
+      },
+      null,
+    ),
   );
 };
 

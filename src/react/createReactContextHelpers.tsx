@@ -8,7 +8,7 @@ export type XStateReactContextHelpers<
   TContext,
   TEvent extends EventObject,
   TTypestate extends Typestate<TContext>,
-  ProviderProps
+  ProviderProps,
 > = {
   Provider: React.FC<
     ProviderProps & {
@@ -32,7 +32,7 @@ export function createReactContextHelpers<
   TContext,
   TEvent extends EventObject,
   TTypestate extends Typestate<TContext>,
-  ProviderProps
+  ProviderProps,
 >(
   /**
    * Display name for the react context
@@ -52,18 +52,18 @@ export function createReactContextHelpers<
 
   return {
     ReactContext: machineServiceContext,
-    Provider: function(props: React.PropsWithChildren<ProviderProps>) {
+    Provider: function (props: React.PropsWithChildren<ProviderProps>) {
       const interpreter: Interpreter<TContext, any, TEvent, TTypestate> =
         typeof getInterpreter === 'function' ? getInterpreter(props) : getInterpreter;
 
-      return (
-        <machineServiceContext.Provider value={interpreter}>
-          {typeof props.children == 'function' ? props.children({ interpreter }) : props.children}
-        </machineServiceContext.Provider>
+      return React.createElement(
+        machineServiceContext.Provider,
+        { value: interpreter },
+        typeof props.children == 'function' ? props.children({ interpreter }) : props.children,
       );
     },
     useInterpreter,
-    useSelector: function<T>(
+    useSelector: function <T>(
       selector: (state: State<TContext, TEvent, TTypestate>) => T,
       compare?: (a: T, b: T) => boolean,
     ): T {

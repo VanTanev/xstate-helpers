@@ -1,0 +1,4 @@
+{
+  "main": "dist/xstate-helpers-react-useIsXStateTransitionAvailable.cjs.js",
+  "module": "dist/xstate-helpers-react-useIsXStateTransitionAvailable.esm.js"
+}
