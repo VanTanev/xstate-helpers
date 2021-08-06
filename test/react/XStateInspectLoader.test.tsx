@@ -84,4 +84,37 @@ describe('XStateInspectLoader', () => {
     act(() => window.XStateInspector.disable());
     await waitFor(() => expect(screen.getByTestId('wrapper')).toBeEmptyDOMElement());
   });
+
+  describe('mock window.open', () => {
+    let open: any;
+    beforeEach(() => {
+      open = window.open;
+      window.open = jest.fn();
+    });
+    afterEach(() => {
+      window.open = open;
+    });
+
+    test('options flag is honored to open in iframe even if default is open is true', async () => {
+      const App = () => {
+        return (
+          <>
+            <div data-testid="wrapper" id="wrapper"></div>
+            <XStateInspectLoader
+              options={{ iframe: false }}
+              initialIsEnabled={true}
+              wrapperElement="#wrapper"
+            >
+              <span>content</span>
+            </XStateInspectLoader>
+          </>
+        );
+      };
+      render(<App />);
+
+      await waitFor(() => expect(screen.getByTestId('wrapper')).not.toBeEmptyDOMElement());
+      expect(window.open).toHaveBeenCalled();
+      expect(screen.getByText(/content/i)).not.toBeEmptyDOMElement();
+    });
+  });
 });
