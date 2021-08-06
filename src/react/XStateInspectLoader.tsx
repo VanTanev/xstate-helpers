@@ -19,6 +19,7 @@ export type XStateInspectLoaderProps = {
    * Initialize as enabled when we don't have a value stored in local storage?
    */
   initialIsEnabled?: boolean;
+  options?: Partial<InspectorOptions>;
   /**
    * Ignore the console interface and always enable the inspector
    */
@@ -29,6 +30,7 @@ export type XStateInspectLoaderProps = {
 export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   children,
   initialIsEnabled = false,
+  options,
   wrapperElement,
   forceEnabled,
   styles,
@@ -82,7 +84,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
 
       ReactDOM.render(
-        React.createElement(XStateInspector, { styles, inspect }, null),
+        React.createElement(XStateInspector, { styles, inspect, options }, null),
         wrapperElement,
       );
       setLoading(false);
@@ -104,13 +106,16 @@ const defaultStyles: React.CSSProperties = {
   overflowY: 'scroll',
 };
 const XStateInspector: React.FC<{
+  options?: Partial<InspectorOptions>;
   inspect: (options: Partial<InspectorOptions> | undefined) => void;
   styles?: React.CSSProperties;
-}> = ({ inspect, styles = defaultStyles }) => {
+}> = ({ inspect, options, styles = defaultStyles }) => {
   let ref = React.createRef<HTMLIFrameElement>();
+
   React.useLayoutEffect(() => {
-    inspect({ iframe: () => ref.current! });
-  }, [inspect, ref]);
+    inspect({ iframe: () => ref.current!, ...options });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return React.createElement(
     'div',
