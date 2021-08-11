@@ -96,7 +96,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         ReactDOM.unmountComponentAtNode(wrapperElement);
       }
     };
-  }, [isEnabled]);
+  }, [isEnabled, JSON.stringify(options)]);
   return isEnabled && loading ? null : React.createElement(React.Fragment, null, children);
 };
 
