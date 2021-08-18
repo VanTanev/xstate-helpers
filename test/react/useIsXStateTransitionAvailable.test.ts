@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useIsXStateTransitionAvailable } from '../../src/react/useIsXStateTransitionAvailable';
 import { createMachine, interpret, Interpreter } from 'xstate';
+import { useActor } from '@xstate/react';
 
 describe('useIsXStateTransitionAvailable', () => {
   type TContext = {};
@@ -36,6 +37,10 @@ describe('useIsXStateTransitionAvailable', () => {
               GO_TO_STATE_ONE: 'one',
             },
           },
+        },
+        invoke: {
+          id: 'child',
+          src: createMachine({}),
         },
       }),
     );
@@ -81,5 +86,13 @@ describe('useIsXStateTransitionAvailable', () => {
   it('throws for invalid parameters', () => {
     const { result } = renderHook(() => useIsXStateTransitionAvailable({} as any, ''));
     expect(result.error?.message).toMatch('must be a state machine instance');
+  });
+
+  it('works with invoked child machines', () => {
+    const { result } = renderHook(() => {
+      const [state] = useActor(service);
+      return useIsXStateTransitionAvailable(state.children['child'], 'I_DONT_EXIST');
+    });
+    expect(result.current).toBe(false);
   });
 });
