@@ -7,6 +7,10 @@ describe('useIsXStateTransitionAvailable', () => {
   type TContext = {};
   type TEvent =
     | {
+        type: 'ERROR';
+        data: Error;
+      }
+    | {
         type: 'GO_TO_STATE_TWO';
       }
     | {
