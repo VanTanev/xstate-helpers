@@ -5,6 +5,17 @@ import { useSelector } from '@xstate/react';
 export function useIsXStateTransitionAvailable<
   TEventType extends TEvent['type'],
   TEvent extends EventObject = EventObject,
+>(service: Interpreter<any, any, TEvent, any>, event: TEventType | TEvent): boolean;
+export function useIsXStateTransitionAvailable<
+  TEventType extends TEvent['type'],
+  TEvent extends EventObject = EventObject,
+>(
+  service: ActorRef<TEvent> & { machine?: StateMachine<any, any, TEvent, any> },
+  event: TEventType | TEvent,
+): boolean;
+export function useIsXStateTransitionAvailable<
+  TEventType extends TEvent['type'],
+  TEvent extends EventObject = EventObject,
 >(
   service:
     | Interpreter<any, any, TEvent, any>
