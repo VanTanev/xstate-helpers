@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { InspectorOptions } from '@xstate/inspect';
 
-const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
+export const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
 
 // declare global {
 declare global {
@@ -35,8 +35,8 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   forceEnabled,
   styles,
 }) => {
-  const [isEnabled, setIsEnabled] = React.useState(
-    () => forceEnabled ?? getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
+  const [isEnabled, setIsEnabled] = React.useState(() =>
+    forceEnabled != null ? forceEnabled : getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
   );
   React.useEffect(() => {
     if (forceEnabled !== undefined) {
