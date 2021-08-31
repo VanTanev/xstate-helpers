@@ -26,6 +26,7 @@ export type XStateInspectLoaderProps = {
   forceEnabled?: boolean;
   wrapperElement?: string | Element;
   styles?: React.CSSProperties;
+  stylesIframe?: React.CSSProperties;
 };
 export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   children,
@@ -34,6 +35,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   wrapperElement,
   forceEnabled,
   styles,
+  stylesIframe,
 }) => {
   const [isEnabled, setIsEnabled] = React.useState(() =>
     forceEnabled != null ? forceEnabled : getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
@@ -84,7 +86,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
 
       ReactDOM.render(
-        React.createElement(XStateInspector, { styles, inspect, options }, null),
+        React.createElement(XStateInspector, { styles, stylesIframe, inspect, options }, null),
         wrapperElement,
       );
       setLoading(false);
@@ -105,11 +107,16 @@ const defaultStyles: React.CSSProperties = {
   overflow: 'hidden',
   overflowY: 'scroll',
 };
+const defaultStylesIframe: React.CSSProperties = {
+  width: '100%',
+  height: '5000px',
+};
 const XStateInspector: React.FC<{
   options?: Partial<InspectorOptions>;
   inspect: (options: Partial<InspectorOptions> | undefined) => void;
   styles?: React.CSSProperties;
-}> = ({ inspect, options, styles = defaultStyles }) => {
+  stylesIframe?: React.CSSProperties;
+}> = ({ inspect, options, styles = defaultStyles, stylesIframe = defaultStylesIframe }) => {
   let ref = React.createRef<HTMLIFrameElement>();
 
   React.useLayoutEffect(() => {
@@ -125,7 +132,7 @@ const XStateInspector: React.FC<{
       {
         ref,
         title: 'xstate-inspector',
-        style: { width: '100%', height: '5000px' },
+        style: stylesIframe,
         'data-xstate': true,
       },
       null,
