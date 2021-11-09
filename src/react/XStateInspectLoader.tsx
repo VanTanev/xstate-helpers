@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { InspectorOptions, Inspector } from '@xstate/inspect';
 
-export const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
+export const LOCAL_STORAGE_KEY_IS_ENABLED = 'xstate-helpers::isEnabled';
+export const LOCAL_STORAGE_KEY_OVERRIDE_OPTIONS = 'xstate-helpers::overrideOptions';
 
 // declare global {
 declare global {
@@ -10,7 +11,7 @@ declare global {
     XStateInspector: {
       enable: () => void;
       disable: () => void;
-      overrideOptions: (options?: Partial<InspectorOptions>) => void;
+      overrideOptions: (options?: Partial<InspectorOptions>) => Partial<InspectorOptions>;
     };
   }
 }
@@ -39,12 +40,20 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   stylesIframe,
 }) => {
   const [loading, setLoading] = React.useState(true);
-  const [overrideOptions, setOverrideOptions] = React.useState<
+  const [overrideOptions, _setOverrideOptions] = React.useState<
     Partial<InspectorOptions> | undefined
-  >(undefined);
-  const [isEnabled, setIsEnabled] = React.useState(() =>
-    forceEnabled != null ? forceEnabled : getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
+  >(() => getItem(LOCAL_STORAGE_KEY_OVERRIDE_OPTIONS, {}));
+  const setOverrideOptions = (value?: Partial<InspectorOptions>) => {
+    _setOverrideOptions(value);
+    setItem(LOCAL_STORAGE_KEY_OVERRIDE_OPTIONS, value);
+  };
+  const [isEnabled, _setIsEnabled] = React.useState(() =>
+    forceEnabled != null ? forceEnabled : getItem(LOCAL_STORAGE_KEY_IS_ENABLED, initialIsEnabled),
   );
+  const setIsEnabled = (value: boolean) => {
+    _setIsEnabled(value);
+    setItem(LOCAL_STORAGE_KEY_IS_ENABLED, value);
+  };
 
   React.useEffect(() => {
     if (forceEnabled !== undefined) {
@@ -52,18 +61,20 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
     }
   }, [forceEnabled]);
 
+  const optionsRef = React.useRef(options);
   React.useEffect(() => {
     // expose an interface for setting open/closed directly on console
     const XStateInspector: Window['XStateInspector'] = {
       enable: () => {
         setIsEnabled(true);
-        setItem(LOCAL_STORAGE_KEY, true);
       },
       disable: () => {
         setIsEnabled(false);
-        setItem(LOCAL_STORAGE_KEY, false);
       },
-      overrideOptions: setOverrideOptions,
+      overrideOptions: (overrideOptions: Partial<InspectorOptions> = {}) => {
+        setOverrideOptions(overrideOptions);
+        return { ...optionsRef.current, ...overrideOptions };
+      },
     };
     (window as any).XStateInspector = XStateInspector;
   }, []);
