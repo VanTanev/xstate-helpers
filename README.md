@@ -111,6 +111,19 @@ XStateInspector.enable()
 XStateInspector.disable()
 ```
 
+You can also override the inspector options from the console.
+For example, on some pages you might want the Inspector to run in a separate window:
+
+```
+XStateInspector.overrideOptions({ iframe: false })
+```
+
+And then you can return to the default iframe behavior:
+
+```
+XStateInspector.overrideOptions(undefined)
+```
+
 #### `<XStateInspectLoader>` props:
 
 | Prop               | Type                   | Description                                                                                                                                                    |
@@ -119,6 +132,7 @@ XStateInspector.disable()
 | `styles`           | `React.CSSProperties`  | **Optional**. CSS styles for the inner wrapping DIV of the inspector iframe.                                                                                   |
 | `initialIsEnabled` | `boolean`              | **Optional**. Should the inspector initialize open the first time it's used. Afterwards, the console XStateInspector.enabled()/disabled() API takes precedence |
 | `forceEnabled`     | `boolean`              | **Optional**. Force the inspector into enabled/disabled state, regardless of console XStateInspector setting.                                                  |
+| `options`          | `object`               | **Optional**. Pass options into `@xstate/inspect` - `{ url: 'https://statecharts.io/inspect', iframe: false }`                                                 |
 
 ### useIsXStateTransitionAvailable()
 
