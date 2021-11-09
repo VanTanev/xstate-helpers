@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { InspectorOptions } from '@xstate/inspect';
+import { InspectorOptions, Inspector } from '@xstate/inspect';
 
 export const LOCAL_STORAGE_KEY = 'xstateHelpersInspectorOpen';
 
@@ -10,6 +10,7 @@ declare global {
     XStateInspector: {
       enable: () => void;
       disable: () => void;
+      overrideOptions: (options?: Partial<InspectorOptions>) => void;
     };
   }
 }
@@ -37,17 +38,23 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   styles,
   stylesIframe,
 }) => {
+  const [loading, setLoading] = React.useState(true);
+  const [overrideOptions, setOverrideOptions] = React.useState<
+    Partial<InspectorOptions> | undefined
+  >(undefined);
   const [isEnabled, setIsEnabled] = React.useState(() =>
     forceEnabled != null ? forceEnabled : getItem(LOCAL_STORAGE_KEY, initialIsEnabled),
   );
+
   React.useEffect(() => {
     if (forceEnabled !== undefined) {
       setIsEnabled(forceEnabled);
     }
   }, [forceEnabled]);
+
   React.useEffect(() => {
     // expose an interface for setting open/closed directly on console
-    (window as any).XStateInspector = {
+    const XStateInspector: Window['XStateInspector'] = {
       enable: () => {
         setIsEnabled(true);
         setItem(LOCAL_STORAGE_KEY, true);
@@ -56,10 +63,13 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         setIsEnabled(false);
         setItem(LOCAL_STORAGE_KEY, false);
       },
+      overrideOptions: setOverrideOptions,
     };
-  }, [setIsEnabled]);
+    (window as any).XStateInspector = XStateInspector;
+  }, []);
 
-  const [loading, setLoading] = React.useState(true);
+  const finalOptions = { ...options, ...overrideOptions };
+
   React.useEffect(() => {
     let active = true; // keep track if this effect was cleaned up
     import('@xstate/inspect').then(({ inspect }) => {
@@ -86,7 +96,11 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
       }
 
       ReactDOM.render(
-        React.createElement(XStateInspector, { styles, stylesIframe, inspect, options }, null),
+        React.createElement(
+          XStateInspector,
+          { styles, stylesIframe, inspect, options: finalOptions },
+          null,
+        ),
         wrapperElement,
       );
       setLoading(false);
@@ -98,7 +112,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         ReactDOM.unmountComponentAtNode(wrapperElement);
       }
     };
-  }, [isEnabled, JSON.stringify(options)]);
+  }, [isEnabled, JSON.stringify(finalOptions)]);
   return isEnabled && loading ? null : React.createElement(React.Fragment, null, children);
 };
 
@@ -113,16 +127,24 @@ const defaultStylesIframe: React.CSSProperties = {
 };
 const XStateInspector: React.FC<{
   options?: Partial<InspectorOptions>;
-  inspect: (options: Partial<InspectorOptions> | undefined) => void;
+  inspect: (options: Partial<InspectorOptions> | undefined) => Inspector | undefined;
   styles?: React.CSSProperties;
   stylesIframe?: React.CSSProperties;
 }> = ({ inspect, options, styles = defaultStyles, stylesIframe = defaultStylesIframe }) => {
-  let ref = React.createRef<HTMLIFrameElement>();
+  const ref = React.createRef<HTMLIFrameElement>();
 
   React.useLayoutEffect(() => {
-    inspect({ iframe: () => ref.current!, ...options });
+    const inspector = inspect({
+      iframe: options?.iframe ? options.iframe : () => ref.current!,
+      ...options,
+    });
+    return () => inspector?.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [JSON.stringify(options)]);
+
+  if (options?.iframe === false) {
+    return null;
+  }
 
   return React.createElement(
     'div',

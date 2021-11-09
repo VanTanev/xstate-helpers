@@ -37,7 +37,7 @@ describe('XStateInspectLoader', () => {
       render(<App />);
 
       await waitFor(() => expect(screen.getByText(/content/i)).not.toBeEmptyDOMElement());
-      await waitFor(() => expect(screen.getByTestId('wrapper')).not.toBeEmptyDOMElement());
+      await waitFor(() => expect(screen.getByTestId('wrapper')).toBeEmptyDOMElement());
       await waitFor(() => expect(window.open).toHaveBeenCalled());
     });
   });
