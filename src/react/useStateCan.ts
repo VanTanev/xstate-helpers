@@ -25,7 +25,12 @@ export function useStateCan<
   return useSelector<typeof service, boolean>(
     service,
     useCallback(
-      state => !!service.machine && !!service.machine!.transition(state, event).changed,
+      state => {
+        if (typeof state?.can !== 'function') {
+          throw new Error(`Provided service of useStateCan() is invalid`);
+        }
+        return state.can(event);
+      },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [service, JSON.stringify(event)],
     ),

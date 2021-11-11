@@ -87,7 +87,7 @@ describe('useStateCan', () => {
 
   it('throws for invalid parameters', () => {
     const { result } = renderHook(() => useStateCan({} as any, ''));
-    expect(result.error?.message).toMatch('actor.subscribe is not a function');
+    expect(result.error?.message).toMatch('Provided service of useStateCan() is invalid');
   });
 
   it('works with invoked child machines', () => {
