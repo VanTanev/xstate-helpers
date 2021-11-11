@@ -136,6 +136,10 @@ XStateInspector.overrideOptions(undefined)
 
 ### useIsXStateTransitionAvailable()
 
+#### Deprecated
+
+Depricated in favor of [`useStateCan()`](#useStateCan)
+
 Check if a state transition is available from the current machine state.
 
 ```typescript
@@ -182,6 +186,72 @@ useIsXStateTransitionAvailable(service, {
 
 // false
 useIsXStateTransitionAvailable(service, {
+  type: 'PARAMETIZED_GO_TO_STATE_TWO',
+  parameter: false,
+});
+```
+
+| Parameter | Type                                        | Description   |
+| :-------- | :------------------------------------------ | :------------ |
+| `service` | An interpreted machine or a spawned machine | **Required**. |
+| `event`   | EventObject or EventType                    | **Required**. |
+
+### useStateCan()
+
+A hook that makes using `state.can()` easier!
+
+To use `state.can()` in React component, you must take extra steps to avoid additional re-renders:
+
+```typescript
+const eventToCheck = { type: 'SOME_EVENT' };
+const result = useSelector(
+  service,
+  React.useCallback(state => state.can(eventToCheck), [JSON.stringify(eventToCheck)]),
+);
+```
+
+This hook makes it easier:
+
+```typescript
+const [state, send, service] = useMachine(
+  createMachine({
+    initial: 'one',
+    states: {
+      one: {
+        on: {
+          GO_TO_STATE_TWO: 'two',
+          PARAMETIZED_GO_TO_STATE_TWO: {
+            target: 'two',
+            cond: (_, e) => e.parameter,
+          },
+        },
+      },
+      two: {
+        on: {
+          GO_TO_STATE_ONE: 'one',
+        },
+      },
+    },
+  }),
+);
+
+// true
+useStateCan(service, 'GO_TO_STATE_TWO');
+
+// false
+useStateCan(service, 'GO_TO_STATE_ONE');
+
+// TypeError, no such event exists
+useStateCan(service, 'I_DONT_EXIST');
+
+// true
+useStateCan(service, {
+  type: 'PARAMETIZED_GO_TO_STATE_TWO',
+  parameter: true,
+});
+
+// false
+useStateCan(service, {
   type: 'PARAMETIZED_GO_TO_STATE_TWO',
   parameter: false,
 });
