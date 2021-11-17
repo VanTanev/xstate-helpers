@@ -32,7 +32,7 @@ export function useStateCan<
         return state.can(event);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [service, JSON.stringify(event)],
+      [JSON.stringify(event)],
     ),
   );
 }
