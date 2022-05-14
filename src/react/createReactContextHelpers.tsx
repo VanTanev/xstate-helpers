@@ -1,38 +1,41 @@
 import React from 'react';
 import { useActor, useSelector } from '@xstate/react';
-import { State, EventObject, Interpreter, Typestate, PayloadSender } from 'xstate';
+import {
+  PayloadSender,
+  AnyStateMachine,
+  StateFrom,
+  EventFrom,
+  EventObject,
+  AnyInterpreter,
+  AnyState,
+} from 'xstate';
 
 type MaybeLazy<T, P> = T | ((providerProps: P) => T);
 
 export type XStateReactContextHelpers<
-  TContext,
-  TEvent extends EventObject,
-  TTypestate extends Typestate<TContext>,
-  ProviderProps,
+  TInterpreter extends AnyInterpreter,
+  ProviderProps extends Record<string, unknown>,
+  TMachine extends AnyStateMachine = TInterpreter['machine'],
+  TState extends AnyState = StateFrom<TMachine>,
+  TEvent extends EventObject = EventFrom<TMachine>,
 > = {
   Provider: React.FC<
     ProviderProps & {
-      children?:
-        | ((params: {
-            interpreter: Interpreter<TContext, any, TEvent, TTypestate>;
-          }) => React.ReactNode)
-        | React.ReactNode;
+      children?: ((params: { interpreter: TInterpreter }) => React.ReactNode) | React.ReactNode;
     }
   >;
-  ReactContext: React.Context<Interpreter<TContext, any, TEvent, TTypestate>>;
-  useInterpreter: () => Interpreter<TContext, any, TEvent, TTypestate>;
-  useSelector: <T>(
-    selector: (state: State<TContext, TEvent, TTypestate>) => T,
-    compare?: (a: T, b: T) => boolean,
-  ) => T;
-  useActor: () => [State<TContext, TEvent, any, TTypestate>, PayloadSender<TEvent>];
+  ReactContext: React.Context<TInterpreter>;
+  useInterpreter: () => TInterpreter;
+  useSelector: <T>(selector: (state: TState) => T, compare?: (a: T, b: T) => boolean) => T;
+  useActor: () => [TState, PayloadSender<TEvent>];
   useSend: () => PayloadSender<TEvent>;
 };
 export function createReactContextHelpers<
-  TContext,
-  TEvent extends EventObject,
-  TTypestate extends Typestate<TContext>,
-  ProviderProps,
+  TInterpreter extends AnyInterpreter,
+  ProviderProps extends Record<string, unknown>,
+  TMachine extends AnyStateMachine = TInterpreter['machine'],
+  TState extends AnyState = StateFrom<TMachine>,
+  TEvent extends EventObject = EventFrom<TMachine>,
 >(
   /**
    * Display name for the react context
@@ -41,19 +44,20 @@ export function createReactContextHelpers<
   /**
    * Function that provides the interpreter for your machine.
    *
-   * You should use `useInterpret()` from `@xstate/react`. You can pass options to it as normal
+   * Inside it you should use `useInterpret()` from `@xstate/react`. You can pass options to it as normal
+   *
+   * Example:
+   *
    */
-  getInterpreter: MaybeLazy<Interpreter<TContext, any, TEvent, TTypestate>, ProviderProps>,
-): XStateReactContextHelpers<TContext, TEvent, TTypestate, ProviderProps> {
-  const machineServiceContext = React.createContext<Interpreter<TContext, any, TEvent, TTypestate>>(
-    null!,
-  );
+  getInterpreter: MaybeLazy<TInterpreter, ProviderProps>,
+): XStateReactContextHelpers<TInterpreter, ProviderProps, TMachine, TState, TEvent> {
+  const machineServiceContext = React.createContext<TInterpreter>(null!);
   machineServiceContext.displayName = displayName;
 
   return {
     ReactContext: machineServiceContext,
-    Provider: function (props: React.PropsWithChildren<ProviderProps>) {
-      const interpreter: Interpreter<TContext, any, TEvent, TTypestate> =
+    Provider: function (props) {
+      const interpreter: TInterpreter =
         typeof getInterpreter === 'function' ? getInterpreter(props) : getInterpreter;
 
       return React.createElement(
@@ -63,19 +67,14 @@ export function createReactContextHelpers<
       );
     },
     useInterpreter,
-    useSelector: function <T>(
-      selector: (state: State<TContext, TEvent, TTypestate>) => T,
-      compare?: (a: T, b: T) => boolean,
-    ): T {
-      return useSelector(useInterpreter(), selector, compare);
-    },
-    useActor: () => useActor(useInterpreter()),
+    useSelector: (selector, compare) => useSelector(useInterpreter(), selector, compare),
+    useActor: () => useActor(useInterpreter()) as [TState, PayloadSender<TEvent>],
     useSend: () => useInterpreter().send,
   };
 
   //////////////////////////////
 
-  function useInterpreter(): Interpreter<TContext, any, TEvent, TTypestate> {
+  function useInterpreter(): TInterpreter {
     const service = React.useContext(machineServiceContext);
     if (!service) {
       throw new Error(

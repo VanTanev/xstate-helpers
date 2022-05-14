@@ -1,33 +1,38 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createReactContextHelpers } from '../../src/react/createReactContextHelpers';
-import { createMachine } from 'xstate';
+import { createMachine, t } from 'xstate';
 import { useInterpret, useActor } from '@xstate/react';
 import userEvent from '@testing-library/user-event';
 
+type Context = {
+  name: string;
+  age: number;
+};
+type Event = { type: 'START' } | { type: 'STOP' } | { type: 'TOGGLE' };
+
+const exampleMachine = createMachine({
+  schema: {
+    context: t<Context>(),
+    events: t<Event>(),
+  },
+  tsTypes: {} as import('./createReactContextHelpers.test.typegen').Typegen0,
+  context: {
+    name: 'John Doe',
+    age: 21,
+  },
+  initial: 'stopped',
+  states: {
+    stopped: {
+      on: { START: 'started', TOGGLE: 'started' },
+    },
+    started: {
+      on: { STOP: 'stopped', TOGGLE: 'stopped' },
+    },
+  },
+});
+
 describe('createReactContextHelpers', () => {
-  type Context = {
-    name: string;
-    age: number;
-  };
-  type Event = { type: 'START' } | { type: 'STOP' } | { type: 'TOGGLE' };
-
-  const exampleMachine = createMachine<Context, Event>({
-    context: {
-      name: 'John Doe',
-      age: 21,
-    },
-    initial: 'stopped',
-    states: {
-      stopped: {
-        on: { START: 'started', TOGGLE: 'started' },
-      },
-      started: {
-        on: { STOP: 'stopped', TOGGLE: 'stopped' },
-      },
-    },
-  });
-
   const {
     Provider: ExampleProvider,
     useInterpreter: useExampleInterpreter,
@@ -42,7 +47,7 @@ describe('createReactContextHelpers', () => {
     render(
       <ExampleProvider>
         {({ interpreter }) => {
-          return <p>initial state: {interpreter.initialState.value}</p>;
+          return <p>initial state: {interpreter.initialState.value.toString()}</p>;
         }}
       </ExampleProvider>,
     );
@@ -56,7 +61,7 @@ describe('createReactContextHelpers', () => {
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
-          <span>state: {state.value}</span>
+          <span>state: {state.value.toString()}</span>
         </div>
       );
     };
@@ -69,9 +74,9 @@ describe('createReactContextHelpers', () => {
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
 
-    userEvent.click(screen.getByText(/toggle/i));
+    await userEvent.click(screen.getByText(/toggle/i));
 
-    expect(screen.getByText(/state/i)).toHaveTextContent('state: started');
+    expect(await screen.findByText(/state: started/i)).toBeInTheDocument();
   });
 
   test('useActor', async () => {
@@ -80,7 +85,7 @@ describe('createReactContextHelpers', () => {
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
-          <span>state: {state.value}</span>
+          <span>state: {state.value.toString()}</span>
         </div>
       );
     };
@@ -93,9 +98,9 @@ describe('createReactContextHelpers', () => {
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
 
-    userEvent.click(screen.getByText(/toggle/i));
+    await userEvent.click(screen.getByText(/toggle/i));
 
-    expect(screen.getByText(/state/i)).toHaveTextContent('state: started');
+    expect(await screen.findByText('state: started')).toBeInTheDocument();
   });
 
   test('useSend', async () => {
@@ -105,7 +110,7 @@ describe('createReactContextHelpers', () => {
       return (
         <div>
           <button onClick={() => send('TOGGLE')}>toggle</button>
-          <span>state: {state.value}</span>
+          <span>state: {state.value.toString()}</span>
         </div>
       );
     };
@@ -118,14 +123,14 @@ describe('createReactContextHelpers', () => {
 
     expect(screen.getByText(/state/i)).toHaveTextContent('state: stopped');
 
-    userEvent.click(screen.getByText(/toggle/i));
+    await userEvent.click(screen.getByText(/toggle/i));
 
-    expect(screen.getByText(/state/i)).toHaveTextContent('state: started');
+    expect(await screen.findByText(/state: started/i)).toBeInTheDocument();
   });
 
   test('useSelector', async () => {
     const App: React.FC = () => {
-      const name = useExampleSelector(React.useCallback(state => state.context.name, []));
+      const name = useExampleSelector(state => state.context.name);
       return (
         <div>
           <span>name: {name}</span>

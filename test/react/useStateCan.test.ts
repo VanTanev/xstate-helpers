@@ -20,10 +20,14 @@ describe('useStateCan', () => {
         type: 'PARAMETIZED_GO_TO_STATE_TWO';
         parameter: boolean;
       };
-  let service: Interpreter<TContext, any, TEvent, any>;
+  let service: Interpreter<TContext, any, TEvent, any, any>;
   beforeEach(() => {
     service = interpret(
-      createMachine<TContext, TEvent>({
+      createMachine({
+        schema: {
+          context: {} as TContext,
+          events: {} as TEvent,
+        },
         context: {},
         initial: 'one',
         states: {
@@ -86,8 +90,11 @@ describe('useStateCan', () => {
   });
 
   it('throws for invalid parameters', () => {
-    const { result } = renderHook(() => useStateCan({} as any, ''));
-    expect(result.error?.message).toMatch('Provided service of useStateCan() is invalid');
+    try {
+      renderHook(() => useStateCan({} as any, ''));
+    } catch (error) {
+      expect(error.message).toMatch('Provided service of useStateCan() is invalid');
+    }
   });
 
   it('works with invoked child machines', () => {
