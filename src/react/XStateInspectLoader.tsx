@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { InspectorOptions, Inspector } from '@xstate/inspect';
 
 export const LOCAL_STORAGE_KEY_IS_ENABLED = 'xstate-helpers::isEnabled';
@@ -29,8 +29,9 @@ export type XStateInspectLoaderProps = {
   wrapperElement?: string | Element;
   styles?: React.CSSProperties;
   stylesIframe?: React.CSSProperties;
+  children?: React.ReactNode;
 };
-export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
+export const XStateInspectLoader = ({
   children,
   initialIsEnabled = false,
   options,
@@ -38,7 +39,7 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   forceEnabled,
   styles,
   stylesIframe,
-}) => {
+}: XStateInspectLoaderProps): React.ReactElement | null => {
   const [loading, setLoading] = React.useState(true);
   const [overrideOptions, _setOverrideOptions] = React.useState<
     Partial<InspectorOptions> | undefined
@@ -82,11 +83,11 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
   const finalOptions = { ...options, ...overrideOptions };
 
   React.useEffect(() => {
+    if (!isEnabled) return;
     let active = true; // keep track if this effect was cleaned up
+    let root: ReactDOM.Root | undefined;
     import('@xstate/inspect').then(({ inspect }) => {
-      if (!active || !isEnabled) {
-        return;
-      }
+      if (!active) return;
 
       if (wrapperElement) {
         if (typeof wrapperElement === 'string') {
@@ -106,21 +107,21 @@ export const XStateInspectLoader: React.FC<XStateInspectLoaderProps> = ({
         document.body.insertBefore(wrapperElement, document.body.firstChild);
       }
 
-      ReactDOM.render(
+      root = ReactDOM.createRoot(wrapperElement);
+      root.render(
         React.createElement(
           XStateInspector,
           { styles, stylesIframe, inspect, options: finalOptions },
           null,
         ),
-        wrapperElement,
       );
       setLoading(false);
     });
 
     return () => {
       active = false;
-      if (wrapperElement && typeof wrapperElement !== 'string') {
-        ReactDOM.unmountComponentAtNode(wrapperElement);
+      if (root) {
+        root.unmount();
       }
     };
   }, [isEnabled, JSON.stringify(finalOptions)]);

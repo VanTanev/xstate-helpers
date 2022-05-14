@@ -1,5 +1,8 @@
 import React from 'react';
-import { XStateInspectLoader, LOCAL_STORAGE_KEY_IS_ENABLED } from '../../src/react/XStateInspectLoader';
+import {
+  XStateInspectLoader,
+  LOCAL_STORAGE_KEY_IS_ENABLED,
+} from '../../src/react/XStateInspectLoader';
 import { screen, render, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
