@@ -37,32 +37,26 @@
   "module": "dist/xstate-helpers.esm.js",
   "exports": {
     "./events": {
-      "types": "./events/dist/xstate-helpers-events.cjs.js",
       "module": "./events/dist/xstate-helpers-events.esm.js",
       "default": "./events/dist/xstate-helpers-events.cjs.js"
     },
     ".": {
-      "types": "./dist/xstate-helpers.cjs.js",
       "module": "./dist/xstate-helpers.esm.js",
       "default": "./dist/xstate-helpers.cjs.js"
     },
     "./react": {
-      "types": "./react/dist/xstate-helpers-react.cjs.js",
       "module": "./react/dist/xstate-helpers-react.esm.js",
       "default": "./react/dist/xstate-helpers-react.cjs.js"
     },
     "./react/XStateInspectLoader": {
-      "types": "./react/XStateInspectLoader/dist/xstate-helpers-react-XStateInspectLoader.cjs.js",
       "module": "./react/XStateInspectLoader/dist/xstate-helpers-react-XStateInspectLoader.esm.js",
       "default": "./react/XStateInspectLoader/dist/xstate-helpers-react-XStateInspectLoader.cjs.js"
     },
     "./react/createReactContextHelpers": {
-      "types": "./react/createReactContextHelpers/dist/xstate-helpers-react-createReactContextHelpers.cjs.js",
       "module": "./react/createReactContextHelpers/dist/xstate-helpers-react-createReactContextHelpers.esm.js",
       "default": "./react/createReactContextHelpers/dist/xstate-helpers-react-createReactContextHelpers.cjs.js"
     },
     "./react/useIsXStateTransitionAvailable": {
-      "types": "./react/useIsXStateTransitionAvailable/dist/xstate-helpers-react-useIsXStateTransitionAvailable.cjs.js",
       "module": "./react/useIsXStateTransitionAvailable/dist/xstate-helpers-react-useIsXStateTransitionAvailable.esm.js",
       "default": "./react/useIsXStateTransitionAvailable/dist/xstate-helpers-react-useIsXStateTransitionAvailable.cjs.js"
     },
